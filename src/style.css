@@ -1,0 +1,749 @@
+/* Adiviná qué músculo
+   ---------------------------------------------------------------
+   El material es la libreta donde están las notas: tinta azul-negra
+   de lapicera, papel madera. Acá va al revés que en el papel —la
+   tinta es el fondo y el papel es el texto— porque esto se proyecta
+   en un salón, no se lee en la mano.
+
+   Los cuatro colores de opción son los cuatro colores de lapicera
+   de una cartuchera. El amarillo es aparte: es el marcador, y sólo
+   aparece sobre lo que estuvo bien.
+
+   La firma es la silueta: el cuerpo va dibujado a trazo y el único
+   músculo relleno es el que está en juego. Es lo que uno hace con
+   una lapicera sobre un diagrama. */
+
+:root {
+  --tinta: #101a2e;
+  --tinta-alta: #1c2b47;
+  --tinta-viva: #2a3d61;
+  --papel: #e8dfcc;
+  --papel-vivo: #f7f1e3;
+  --tenue: #8d93a6;
+  --trazo: #6b7d9e;
+  --musculo: #8090ad;
+
+  --pen-rojo: #e2574c;
+  --pen-verde: #63b06a;
+  --pen-azul: #5aa9e6;
+  --pen-violeta: #b07cc6;
+  --marcador: #f0c04a;
+
+  --display: 'Familjen Grotesk', system-ui, sans-serif;
+  /* Atkinson Hyperlegible está diseñada para que cada letra se distinga de las
+     demás a distancia y con poco contraste. Acá eso no es un adorno: la mitad
+     de las opciones se leen desde el fondo del salón en veinte segundos. */
+  --texto: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --dato: 'DM Mono', ui-monospace, monospace;
+
+  --borde: 1px solid color-mix(in srgb, var(--papel) 14%, transparent);
+  --radio: 10px;
+  --sombra: 0 18px 40px rgb(0 0 0 / 0.4);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--tinta);
+  color: var(--papel);
+  font-family: var(--texto);
+  font-size: clamp(15px, 1.1vw + 12px, 18px);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  height: 100%;
+}
+
+/* ---------- pantallas ---------- */
+
+.screen {
+  display: none;
+  height: 100%;
+  padding: clamp(16px, 3vw, 40px);
+}
+.screen.is-active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- tipografía compartida ---------- */
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--dato);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+
+.title {
+  margin: 0.2em 0 0.3em;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 7vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--papel-vivo);
+}
+
+.lede {
+  margin: 0;
+  max-width: 46ch;
+  color: color-mix(in srgb, var(--papel) 80%, transparent);
+}
+
+.hint {
+  margin: 0.6em 0 0;
+  color: var(--tenue);
+  font-size: 0.9rem;
+}
+.hint.error {
+  color: var(--pen-rojo);
+}
+
+.aviso {
+  margin-top: 1.6em;
+  padding: 0.8em 1em;
+  max-width: 52ch;
+  border-left: 3px solid var(--marcador);
+  background: color-mix(in srgb, var(--marcador) 10%, transparent);
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--papel) 88%, transparent);
+}
+
+/* ---------- botones ---------- */
+
+.btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0.85em 1.6em;
+  border: none;
+  border-radius: var(--radio);
+  font-family: var(--texto);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn-sub {
+  font-family: var(--dato);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+.btn-primary {
+  background: var(--marcador);
+  color: #2a1f04;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--papel);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--papel) 26%, transparent);
+}
+
+:where(button, input, a):focus-visible {
+  outline: 3px solid var(--pen-azul);
+  outline-offset: 3px;
+}
+
+/* ---------- la chapa: el objeto que se repite ----------
+   Es la etiqueta sobre la silueta y es el botón del celu. La misma
+   forma en los dos lados, a propósito. */
+
+.letra {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.1em;
+  height: 2.1em;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.5);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.95em;
+  color: #101a2e;
+}
+.letra--0 { background: var(--pen-rojo); }
+.letra--1 { background: var(--pen-azul); }
+.letra--2 { background: var(--pen-verde); }
+.letra--3 { background: var(--pen-violeta); }
+
+/* ---------- la silueta ----------
+   El cuerpo se dibuja dos veces: el grupo .contorno grueso en el
+   color del trazo, y .relleno más fino encima. De ahí sale la línea
+   de lapicera alrededor de una figura hecha de trazos. */
+
+.cuerpo-caja {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  /* La caja sigue la forma de la figura en vez de estirarse a la columna: si no,
+     en la pantalla de revelación queda una caja alta y vacía con un monigote
+     chiquito adentro. */
+  height: 100%;
+  width: auto;
+  aspect-ratio: 22 / 46;
+  max-width: 100%;
+  justify-self: center;
+  padding: clamp(8px, 1.5vw, 20px);
+  border: var(--borde);
+  border-radius: var(--radio);
+  background: color-mix(in srgb, var(--tinta-alta) 45%, transparent);
+}
+.cuerpo-caja[hidden] {
+  display: none;
+}
+.silueta {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+}
+
+.contorno .f-solido {
+  fill: var(--trazo);
+  stroke: var(--trazo);
+  stroke-width: 5;
+}
+.contorno .f-brazo,
+.contorno .f-pierna {
+  fill: none;
+  stroke: var(--trazo);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.contorno .f-brazo { stroke-width: 25; }
+.contorno .f-pierna { stroke-width: 32; }
+
+.relleno .f-solido {
+  fill: var(--tinta-alta);
+  stroke: none;
+}
+.relleno .f-brazo,
+.relleno .f-pierna {
+  fill: none;
+  stroke: var(--tinta-alta);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.relleno .f-brazo { stroke-width: 19; }
+.relleno .f-pierna { stroke-width: 26; }
+
+/* En reposo los nueve grupos se ven como bloques grises sobre el cuerpo: para
+   contestar "¿dónde está?" hay que poder distinguir las cuatro regiones antes
+   de saber cuál es cuál. El filete oscuro es el que las separa entre sí. */
+.reg {
+  fill: var(--musculo);
+  stroke: var(--tinta);
+  stroke-width: 1.5;
+  transition: fill 0.25s ease;
+}
+/* El grupo del que habla la pregunta: rellenado, como marcado con la lapicera. */
+.reg.is-sujeto {
+  fill: var(--pen-azul);
+}
+/* Y el que resultó correcto, con el marcador encima. */
+.reg.is-correcta {
+  fill: var(--marcador);
+}
+
+.chapa rect {
+  stroke: rgb(255 255 255 / 0.5);
+  stroke-width: 2.5;
+}
+.chapa text {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 24px;
+  fill: #101a2e;
+}
+.chapa--0 rect { fill: var(--pen-rojo); }
+.chapa--1 rect { fill: var(--pen-azul); }
+.chapa--2 rect { fill: var(--pen-verde); }
+.chapa--3 rect { fill: var(--pen-violeta); }
+.chapa.is-correcta rect {
+  stroke: var(--papel-vivo);
+  stroke-width: 5;
+}
+
+/* Taller de la silueta (?silueta): las dos vistas, una al lado de la otra. */
+.screen.taller {
+  flex-direction: row;
+  gap: clamp(20px, 4vw, 60px);
+  justify-content: center;
+}
+.taller-vista {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-height: 0;
+}
+.taller-vista .cuerpo-caja {
+  flex: 1 1 auto;
+}
+.taller-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--dato);
+  font-size: 0.78rem;
+  color: var(--tenue);
+}
+
+/* ---------- inicio ---------- */
+
+.home {
+  margin: auto 0;
+  max-width: 62ch;
+}
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 2em;
+}
+
+/* ---------- lobby del host ---------- */
+
+.lobby {
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(280px, 1fr);
+  gap: clamp(24px, 5vw, 72px);
+  align-items: center;
+  width: min(1100px, 100%);
+}
+.lobby-step {
+  margin: 1.2em 0 0.2em;
+  color: var(--tenue);
+  font-size: 0.9rem;
+}
+.lobby-url {
+  margin: 0;
+  font-family: var(--dato);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: var(--pen-azul);
+  word-break: break-all;
+}
+.pin {
+  font-family: var(--dato);
+  font-weight: 500;
+  font-size: clamp(3rem, 9vw, 6rem);
+  letter-spacing: 0.14em;
+  color: var(--papel-vivo);
+}
+.players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0.8em 0 1.6em;
+  padding: 0;
+  list-style: none;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.players li {
+  padding: 0.35em 0.8em;
+  border-radius: 999px;
+  background: var(--tinta-alta);
+  font-size: 0.9rem;
+}
+
+/* ---------- pregunta (proyector) ---------- */
+
+.qhead,
+.qfoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 0 0 auto;
+}
+.qfoot {
+  margin-top: clamp(12px, 2vh, 24px);
+}
+.answered {
+  margin: 0;
+  font-family: var(--dato);
+  font-size: 0.85rem;
+  color: var(--tenue);
+}
+.timer {
+  display: grid;
+  place-items: center;
+  width: 3.4em;
+  height: 3.4em;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--papel) 20%, transparent);
+  font-family: var(--dato);
+  font-size: 1.1rem;
+  color: var(--papel-vivo);
+}
+
+.qbody {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(200px, 0.5fr) 1fr;
+  gap: clamp(16px, 3vw, 40px);
+  align-items: stretch;
+  margin-top: clamp(8px, 2vh, 20px);
+}
+/* Las de concepto no tienen silueta: el enunciado se queda con todo el ancho
+   en vez de dejar media pantalla vacía. */
+.qbody:has(.cuerpo-caja[hidden]),
+.reveal:has(.cuerpo-caja[hidden]) {
+  grid-template-columns: 1fr;
+}
+.reveal:has(.cuerpo-caja[hidden]) {
+  grid-template-columns: 1.6fr 0.7fr;
+}
+
+.qmain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+.question {
+  margin: 0 0 0.8em;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.6vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--papel-vivo);
+}
+.options {
+  display: grid;
+  gap: 10px;
+}
+.options--letras {
+  grid-template-columns: repeat(4, 1fr);
+  justify-items: center;
+}
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.7em 0.9em;
+  border-radius: var(--radio);
+  background: var(--tinta-alta);
+  font-weight: 400;
+}
+.options--letras .opt {
+  justify-content: center;
+  padding: 0.5em;
+  background: transparent;
+}
+.options--letras .letra {
+  width: 2.6em;
+  height: 2.6em;
+  border-radius: 12px;
+  font-size: 1.9em;
+}
+
+/* ---------- revelación ---------- */
+
+.reveal {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(160px, 0.5fr) 1fr 0.7fr;
+  gap: clamp(16px, 2.5vw, 32px);
+  margin-top: clamp(8px, 2vh, 20px);
+}
+.reveal-answer {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.correct-name {
+  margin: 0.15em 0 0.3em;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.8vw, 2.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--marcador);
+}
+.fact {
+  margin: 0 0 1.2em;
+  color: color-mix(in srgb, var(--papel) 82%, transparent);
+  overflow-y: auto;
+}
+.bars {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.85rem;
+}
+.bar-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--tinta-alta);
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--tinta-viva);
+  transition: width 0.5s ease;
+}
+.bar.correct .bar-fill {
+  background: var(--marcador);
+}
+.bar-n {
+  font-family: var(--dato);
+  color: var(--tenue);
+  min-width: 2ch;
+  text-align: right;
+}
+
+.rank-list {
+  margin: 0.6em 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  overflow-y: auto;
+}
+.rank-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0.45em 0.7em;
+  border-radius: 8px;
+  background: var(--tinta-alta);
+  font-size: 0.9rem;
+}
+.r-score {
+  font-family: var(--dato);
+  color: var(--marcador);
+}
+
+/* ---------- podio ---------- */
+
+.podium {
+  margin: auto;
+  width: min(720px, 100%);
+  text-align: center;
+}
+.podium-top {
+  margin: 1.5em 0 1em;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.podium-top li {
+  display: grid;
+  grid-template-columns: 2.5em 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 0.7em 1em;
+  border-radius: var(--radio);
+  background: var(--tinta-alta);
+  text-align: left;
+}
+.p-place {
+  font-size: 1.6rem;
+}
+.p-name {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+.p-score {
+  font-family: var(--dato);
+  color: var(--marcador);
+}
+.rank-rest {
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+/* ---------- jugador ---------- */
+
+.join {
+  margin: auto;
+  width: min(380px, 100%);
+  display: grid;
+  gap: 14px;
+}
+.field {
+  display: grid;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--tenue);
+}
+.field input {
+  padding: 0.7em 0.8em;
+  border: var(--borde);
+  border-radius: var(--radio);
+  background: var(--tinta-alta);
+  color: var(--papel-vivo);
+  font-family: var(--dato);
+  font-size: 1.2rem;
+}
+
+.pwait,
+.presult,
+.pfinal {
+  margin: auto;
+  text-align: center;
+}
+.badge {
+  font-size: 3rem;
+  color: var(--marcador);
+}
+.pwait-name {
+  margin: 0.2em 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--papel-vivo);
+}
+
+.pq-hint {
+  flex: 0 0 auto;
+  margin: 0 0 12px;
+  font-family: var(--dato);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tenue);
+  text-align: center;
+}
+.poptions {
+  flex: 1 1 auto;
+  display: grid;
+  gap: 12px;
+  grid-template-rows: repeat(4, 1fr);
+}
+.popt {
+  display: flex;
+  align-items: center;
+  /* Alineadas a la izquierda, no centradas: los movimientos son frases largas
+     que se parten en dos líneas, y con el texto centrado la chapa se corría de
+     lugar en cada opción. */
+  justify-content: flex-start;
+  text-align: left;
+  gap: 0.8em;
+  padding: 0.6em 1em;
+  border: none;
+  border-radius: 14px;
+  background: var(--tinta-alta);
+  color: var(--papel-vivo);
+  font-family: var(--texto);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+.popt:active:not(:disabled) {
+  transform: scale(0.97);
+}
+/* En las de ubicación el botón es la chapa entera: el pulgar apunta al mismo
+   objeto que está apoyado sobre la silueta proyectada. */
+.poptions--letras .popt {
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+}
+.poptions--letras .letra {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  font-size: 2.4rem;
+}
+.poptions.locked .popt:not(.chosen) {
+  opacity: 0.28;
+}
+.popt.chosen {
+  box-shadow: inset 0 0 0 3px var(--papel-vivo);
+}
+
+.presult-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+.presult.good .presult-icon {
+  color: var(--pen-verde);
+}
+.presult.bad .presult-icon {
+  color: var(--pen-rojo);
+}
+.presult-title {
+  margin: 0.2em 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--papel-vivo);
+}
+.presult-points {
+  margin: 0;
+  font-family: var(--dato);
+  font-size: 2rem;
+  color: var(--marcador);
+}
+
+/* ---------- chico: el celu ---------- */
+
+@media (max-width: 760px) {
+  .lobby,
+  .qbody,
+  .reveal,
+  .reveal:has(.cuerpo-caja[hidden]) {
+    grid-template-columns: 1fr;
+  }
+  .home-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

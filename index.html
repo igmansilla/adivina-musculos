@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#101a2e" />
+  <title>Adiviná qué músculo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=DM+Mono:wght@400;500&family=Familjen+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <main id="app">
+
+    <!-- ============ INICIO ============ -->
+    <section class="screen is-active" data-screen="home">
+      <div class="home">
+        <p class="eyebrow">Grupos musculares · Juego en vivo</p>
+        <h1 class="title">Adiviná<br />qué músculo</h1>
+        <p class="lede">
+          Dónde está cada grupo, qué movimiento controla y cómo se elonga.
+          Proyectá esta pantalla y que cada uno se una con el celu.
+        </p>
+        <div class="home-actions">
+          <button class="btn btn-primary" data-accion="ser-host">
+            Crear juego <span class="btn-sub">(en la pantalla grande)</span>
+          </button>
+          <button class="btn btn-ghost" data-accion="ser-jugador">
+            Unirme <span class="btn-sub">(desde el celu)</span>
+          </button>
+        </div>
+        <p class="aviso" id="avisoConfig" hidden></p>
+      </div>
+    </section>
+
+    <!-- ============ HOST: sala de espera ============ -->
+    <section class="screen" data-screen="host-lobby">
+      <div class="lobby">
+        <div class="lobby-join">
+          <p class="eyebrow">Para entrar</p>
+          <p class="lobby-step">1 · Abrí en el celu</p>
+          <p class="lobby-url" id="urlSala">tu-sitio.web.app</p>
+          <p class="lobby-step">2 · Poné el código</p>
+          <div class="pin" id="pinSala">····</div>
+        </div>
+        <div class="lobby-players">
+          <p class="eyebrow"><span id="cuentaJugadores">0</span> en la ronda</p>
+          <ul class="players" id="listaJugadores"></ul>
+          <button class="btn btn-primary" id="btnEmpezar" disabled>Empezar juego</button>
+          <p class="hint" id="pistaLobby">Esperando que se unan…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOST: pregunta ============ -->
+    <section class="screen" data-screen="host-pregunta">
+      <header class="qhead">
+        <p class="eyebrow"><span id="hNumero">1 / 12</span></p>
+        <div class="timer"><span id="hTimer">20</span></div>
+      </header>
+      <div class="qbody">
+        <div class="cuerpo-caja" id="cuerpo"></div>
+        <div class="qmain">
+          <h2 class="question" id="hEnunciado">…</h2>
+          <div class="options" id="hOpciones"></div>
+        </div>
+      </div>
+      <footer class="qfoot">
+        <p class="answered"><strong id="hRespondieron">0</strong> respondieron</p>
+        <button class="btn btn-primary" id="btnRevelar">Mostrar respuesta</button>
+      </footer>
+    </section>
+
+    <!-- ============ HOST: revelación ============ -->
+    <section class="screen" data-screen="host-revelacion">
+      <header class="qhead">
+        <p class="eyebrow" id="rNumero">1 / 12</p>
+      </header>
+      <div class="reveal">
+        <div class="cuerpo-caja" id="cuerpoRevelado"></div>
+        <div class="reveal-answer">
+          <p class="eyebrow">La respuesta era</p>
+          <h2 class="correct-name" id="rCorrecta">…</h2>
+          <p class="fact" id="rDato"></p>
+          <div class="bars" id="rBarras"></div>
+        </div>
+        <aside class="rank">
+          <p class="eyebrow">Ranking</p>
+          <ol class="rank-list" id="rRanking"></ol>
+        </aside>
+      </div>
+      <footer class="qfoot">
+        <span></span>
+        <button class="btn btn-primary" id="btnSiguiente">Siguiente</button>
+      </footer>
+    </section>
+
+    <!-- ============ HOST: podio ============ -->
+    <section class="screen" data-screen="host-podio">
+      <div class="podium">
+        <p class="eyebrow">Terminó la ronda</p>
+        <h1 class="title">¡Listo!</h1>
+        <ol class="podium-top" id="podioTop"></ol>
+        <ol class="rank-list rank-rest" id="podioResto"></ol>
+        <button class="btn btn-ghost" data-accion="reiniciar">Jugar otra vez</button>
+      </div>
+    </section>
+
+    <!-- ============ JUGADOR: unirse ============ -->
+    <section class="screen" data-screen="unirse">
+      <form class="join" id="formUnirse">
+        <p class="eyebrow">Unirme al juego</p>
+        <label class="field">
+          <span>Código del juego</span>
+          <input id="inputPin" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="1234" />
+        </label>
+        <label class="field">
+          <span>Tu nombre</span>
+          <input id="inputNombre" autocomplete="off" maxlength="14" placeholder="Sofi" />
+        </label>
+        <button class="btn btn-primary" type="submit">Entrar</button>
+        <p class="hint error" id="errorUnirse" hidden></p>
+      </form>
+    </section>
+
+    <!-- ============ JUGADOR: esperando ============ -->
+    <section class="screen" data-screen="jugador-lobby">
+      <div class="pwait">
+        <div class="badge">✎</div>
+        <h2 class="pwait-name" id="jNombre">…</h2>
+        <p class="hint">¡Estás dentro! Mirá la pantalla grande y esperá a que empiece.</p>
+      </div>
+    </section>
+
+    <!-- ============ JUGADOR: responder ============ -->
+    <section class="screen" data-screen="jugador-pregunta">
+      <p class="pq-hint" id="jPista">Mirá la pantalla y elegí</p>
+      <div class="poptions" id="jOpciones"></div>
+    </section>
+
+    <!-- ============ JUGADOR: resultado ============ -->
+    <section class="screen" data-screen="jugador-revelacion">
+      <div class="presult" id="jResultado">
+        <div class="presult-icon" id="jIcono">✓</div>
+        <h2 class="presult-title" id="jTitulo">¡Bien!</h2>
+        <p class="presult-points" id="jPuntos">+0</p>
+        <p class="hint">Total: <strong id="jTotal">0</strong> · Puesto <strong id="jPuesto">—</strong></p>
+      </div>
+    </section>
+
+    <!-- ============ JUGADOR: final ============ -->
+    <section class="screen" data-screen="jugador-podio">
+      <div class="pfinal">
+        <div class="presult-icon" id="jFinalIcono">🏆</div>
+        <h2 class="presult-title" id="jFinalTitulo">¡Terminó!</h2>
+        <p class="presult-points" id="jFinalPuntos">0 pts</p>
+        <p class="hint">Puesto <strong id="jFinalPuesto">—</strong></p>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

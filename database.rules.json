@@ -1,0 +1,28 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "games": {
+      "$pin": {
+        ".read": true,
+        ".write": true,
+        ".validate": "$pin.matches(/^[0-9]{4,6}$/)",
+        "status": { ".validate": "newData.isString() && newData.val().length <= 12" },
+        "currentQuestion": { ".validate": "newData.isNumber()" },
+        "players": {
+          "$jugador": {
+            "name": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "score": { ".validate": "newData.isNumber()" },
+            "answers": {
+              "$indice": {
+                "option": { ".validate": "newData.isNumber()" },
+                "correct": { ".validate": "newData.isBoolean()" },
+                "points": { ".validate": "newData.isNumber()" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
