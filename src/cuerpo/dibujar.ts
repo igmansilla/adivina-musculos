@@ -55,7 +55,13 @@ export function dibujarCuerpo(contenedor: HTMLElement, opciones: OpcionesCuerpo)
   const raiz = contenedor.querySelector('svg');
   if (!raiz) return;
 
-  if (resaltar) raiz.querySelector(`#reg-${resaltar}`)?.classList.add('is-sujeto');
+  // Antes de revelar, el grupo del que habla la pregunta va en azul: "es de este
+  // que estamos hablando". Al revelar pasa a amarillo, como todo lo que estuvo
+  // bien —en las de identificar, la región *es* la respuesta—.
+  if (resaltar) {
+    raiz.querySelector(`#reg-${resaltar}`)
+      ?.classList.add(revelar === undefined ? 'is-sujeto' : 'is-correcta');
+  }
 
   const cajaChapas = raiz.querySelector('.chapas');
   for (const c of chapas) {

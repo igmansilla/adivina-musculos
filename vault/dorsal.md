@@ -11,8 +11,7 @@ estado: borrador
 
 # Dorsal
 
-Del tren superior. En las notas el tren superior aparece asociado a la
-estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
+Es el ancho de la espalda, por debajo de los trapecios.
 
 ## Qué mueve
 
@@ -24,7 +23,7 @@ estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
 
 ## Para el juego
 
-
+Del tren superior, el que estabiliza. Impulso abajo, estabilidad arriba.
 
 ## Sin confirmar
 

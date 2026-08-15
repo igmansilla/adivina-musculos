@@ -11,8 +11,7 @@ estado: borrador
 
 # Trapecios
 
-Del tren superior. En las notas el tren superior aparece asociado a la
-estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
+Ocupan la espalda alta y el cuello, entre los dos hombros.
 
 ## Qué mueve
 
@@ -24,7 +23,8 @@ estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
 
 ## Para el juego
 
-
+Del tren superior: el que sostiene mientras las piernas empujan. Impulso
+abajo, estabilidad arriba.
 
 ## Sin confirmar
 

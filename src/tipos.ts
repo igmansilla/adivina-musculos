@@ -65,10 +65,28 @@ export interface Chapa {
   opcion: number;
 }
 
-export type ClasePregunta = 'ubicacion' | 'movimiento' | 'elongacion' | 'tren' | 'concepto';
+export type ClasePregunta =
+  | 'ubicacion'
+  | 'identificar'
+  | 'movimiento'
+  | 'quien'
+  | 'elongacion'
+  | 'tren'
+  | 'cuantos'
+  | 'concepto';
+
+/**
+ * Preguntas que son la misma de ida y de vuelta: "¿dónde está el cuádriceps?" y
+ * "¿qué grupo es este que está marcado?" se contestan con lo mismo. Se agrupan
+ * en familias para no meter las dos sobre el mismo grupo en un mismo juego.
+ */
+export type Familia = 'posicion' | 'movimiento' | 'elongacion' | 'tren' | 'cuantos' | 'concepto';
 
 export interface Pregunta {
   clase: ClasePregunta;
+  familia: Familia;
+  /** El slug del grupo del que habla, para no repetirlo dos veces seguidas. */
+  grupo?: string;
   enunciado: string;
   opciones: string[];
   correcta: number;

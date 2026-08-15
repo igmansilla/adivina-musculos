@@ -11,8 +11,7 @@ estado: borrador
 
 # Deltoides
 
-Del tren superior. En las notas el tren superior aparece asociado a la
-estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
+Envuelven el hombro por fuera: son los que le dan la forma redondeada.
 
 ## Qué mueve
 
@@ -24,7 +23,8 @@ estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
 
 ## Para el juego
 
-
+Del tren superior, el que estabiliza. Los otros tres son trapecios,
+pectorales y dorsal.
 
 ## Sin confirmar
 

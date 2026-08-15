@@ -101,6 +101,33 @@ function parsear(texto, archivo) {
 
 // --- Validación ---------------------------------------------------------
 
+/**
+ * El juego tiene que sostenerse solo.
+ *
+ * Un acampante que lo juega no sabe —ni le importa— que esto salió de la
+ * libreta de alguien: "en las notas el tren superior aparece asociado a la
+ * estabilidad" no es una explicación, es un comentario sobre de dónde salió la
+ * explicación. Los campos que van a la pantalla no pueden hablar del material
+ * de origen ni de quién lo escribió.
+ *
+ * Dónde sí va ese comentario: en "## Sin confirmar" y en las citas con ">", que
+ * son para Ignacio y nunca llegan al juego.
+ */
+const META = /\b(notas?|apuntes?|libreta|cuaderno|Ignacio|Claude|el profe)\b/i;
+
+function sinMeta(f, archivo, errores) {
+  const visibles = { texto: f.texto, mueve: f.mueve, elonga: f.elonga, juego: f.juego };
+  for (const [campo, valor] of Object.entries(visibles)) {
+    const m = valor && valor.match(META);
+    if (m) {
+      errores.push(
+        `${archivo}: "${campo}" dice "${m[0]}" y ese texto se muestra en pantalla. ` +
+          `El juego no puede hablar del material del que salió: movelo a "## Sin confirmar" o a una cita ">".`,
+      );
+    }
+  }
+}
+
 function validar(f, archivo, errores) {
   const mal = (msg) => errores.push(`${archivo}: ${msg}`);
   const uno = (campo, lista) => {
@@ -132,6 +159,8 @@ function validar(f, archivo, errores) {
   if (f.estado === 'revisado' && !f.mueve) {
     mal('está en "revisado" pero no tiene "## Qué mueve" escrito');
   }
+
+  sinMeta(f, archivo, errores);
 }
 
 // --- Conceptos ----------------------------------------------------------
@@ -190,6 +219,14 @@ function leerConceptos(errores) {
         );
       }
       continue;
+    }
+    for (const [campo, valor] of Object.entries({ enunciado, dato, opciones: opciones.join(' ') })) {
+      const m = valor.match(META);
+      if (m) {
+        errores.push(
+          `_conceptos.md: "${enunciado}" tiene "${m[0]}" en ${campo}, y eso se muestra en pantalla.`,
+        );
+      }
     }
     conceptos.push({ enunciado, opciones, correcta, dato });
   }

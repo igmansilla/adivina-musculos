@@ -25,6 +25,14 @@ en el cuerpo**. Que el cuádriceps esté en la parte de adelante del muslo no es
 en disputa; es el equivalente de las coordenadas de un refugio en `toponimia`.
 Por eso `vista` y `region` los puede completar Claude, y `## Qué mueve` no.
 
+**Y el juego se sostiene solo.** Lo que va a la pantalla no puede hablar del
+material del que salió: "en las notas el tren superior aparece asociado a la
+estabilidad" no es una explicación, es un comentario sobre de dónde salió la
+explicación. El que juega no sabe ni le importa que esto salió de una libreta.
+`build-vault` **falla** si `texto`, `## Qué mueve`, `## Cómo se elonga` o
+`## Para el juego` mencionan notas, apuntes, la libreta, Ignacio o Claude. Ese
+comentario va en `## Sin confirmar` o en una cita `>`, que nunca llegan al juego.
+
 Cuando algo se deriva de una regla que Ignacio escribió —el `## Cómo se elonga`
 de los cuatro grupos de abajo sale de aplicar su "pensar en el movimiento
 contrario al que hace el músculo"— se deja dicho en una cita `>` dentro de la
@@ -75,8 +83,9 @@ npm run build         tsc + vite build
 
 `build-vault` **valida** y falla si una ficha tiene un `tren`/`cadena`/`funcion`
 fuera de lista, una `region` que la silueta no sabe dibujar, una `region` que no
-corresponde a la `vista` declarada, o está en `revisado` sin `## Qué mueve`.
-Correrlo después de tocar el vault.
+corresponde a la `vista` declarada, está en `revisado` sin `## Qué mueve`, o
+menciona el material de origen en un campo que se muestra en pantalla. Correrlo
+después de tocar el vault.
 
 - `http://localhost:5173/?ensayo` recorre las preguntas sin Firebase ni
   jugadores: sirve para revisar el cuestionario.
@@ -91,9 +100,12 @@ Correrlo después de tocar el vault.
   al proyector sin escuchar `resize` (a diferencia del mapa de `toponimia`).
   El cuerpo se dibuja dos veces —`.contorno` grueso, `.relleno` fino encima—
   para que se lea como un dibujo a lapicera.
-- `src/juego/preguntas.ts` — arma el cuestionario desde el vault. Cinco clases:
-  ubicación, movimiento, elongación, tren y concepto. Los distractores son
+- `src/juego/preguntas.ts` — arma el cuestionario desde el vault. Ocho clases,
+  cuatro de ellas de a pares (la misma pregunta de ida y de vuelta: "¿dónde está
+  el cuádriceps?" contra "el grupo marcado, ¿cuál es?"). Los distractores son
   siempre datos reales de otro grupo, nunca explicaciones inventadas.
+  El reparto va por turnos entre clases y con tope por grupo: sorteando parejo,
+  `tren` —que sale para ocho grupos— se llevaba cinco de las doce.
 - `src/juego/sala.ts` — todo lo que toca Firebase. Nada más lo importa.
 - `src/juego/host.ts` — la pantalla que se proyecta. `jugador.ts` — el celu.
 
@@ -113,4 +125,6 @@ movimiento y de elongación. Los cinco de arriba y el psoas están cargados con 
 que dicen las notas y el resto marcado en `## Sin confirmar`. Las preguntas
 aparecen solas a medida que Ignacio complete.
 
-Falta también pegar la config de Firebase en `src/juego/config.ts`.
+Desplegado en **https://adivina-musculos-ignacio.web.app**. La config de Firebase
+ya está puesta en `src/juego/config.ts` y `firebase deploy` corre el `build-vault`
+y el `build` solo (ver `DEPLOY.md`).

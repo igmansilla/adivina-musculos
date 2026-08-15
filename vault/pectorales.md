@@ -11,8 +11,7 @@ estado: borrador
 
 # Pectorales
 
-Del tren superior. En las notas el tren superior aparece asociado a la
-estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
+Van por delante, en el pecho, de un hombro al otro.
 
 ## Qué mueve
 
@@ -24,7 +23,7 @@ estabilidad, y el inferior al impulso: "impulso abajo, estabilidad arriba".
 
 ## Para el juego
 
-
+Del tren superior: el que estabiliza. El impulso lo pone el tren inferior.
 
 ## Sin confirmar
 

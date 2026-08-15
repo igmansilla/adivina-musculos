@@ -16,15 +16,23 @@ A/B/C/D. El que jugó a uno entiende el otro sin explicación.
 
 ## Qué pregunta
 
-Cinco clases de pregunta, todas armadas desde el vault:
+Ocho clases de pregunta, todas armadas desde el vault. Cuatro van de a pares,
+la misma cosa de ida y de vuelta:
 
 | Clase | Ejemplo |
 |---|---|
 | Ubicación | *Cuádriceps: ¿en cuál de las cuatro chapas?* |
+| Identificar | *El grupo marcado en la silueta, ¿cuál es?* |
 | Movimiento | *Cuádriceps: ¿qué movimiento controla este grupo?* |
+| Quién | *«Extiende la rodilla.» ¿De qué grupo es ese movimiento?* |
 | Elongación | *Cuádriceps: ¿qué movimiento elonga este grupo?* |
 | Tren | *Dorsal: ¿de qué tren es este grupo y para qué sirve?* |
+| Cuántos | *Cuádriceps: ¿cuántos músculos son?* |
 | Concepto | *Al elongar, ¿qué se hace con el cuerpo?* |
+
+El cuestionario se arma repartiendo entre clases, no sorteando del montón: si no,
+la clase con más candidatas se lleva media ronda. Ningún grupo sale más de dos
+veces, y no caen dos seguidas de la misma clase.
 
 ## El contenido
 
