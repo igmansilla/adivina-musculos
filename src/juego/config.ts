@@ -8,13 +8,13 @@
  * que protege la base son las reglas de database.rules.json, no esto.
  */
 export const firebaseConfig = {
-  apiKey: 'PEGAR-ACÁ',
-  authDomain: 'PEGAR-ACÁ.firebaseapp.com',
-  databaseURL: 'https://PEGAR-ACÁ-default-rtdb.firebaseio.com',
-  projectId: 'PEGAR-ACÁ',
-  storageBucket: 'PEGAR-ACÁ.appspot.com',
-  messagingSenderId: 'PEGAR-ACÁ',
-  appId: 'PEGAR-ACÁ',
+  apiKey: 'AIzaSyBT32ZUIJOu_QRnZPZN6F44tEqNUdfnQkg',
+  authDomain: 'adivina-musculos-ignacio.firebaseapp.com',
+  databaseURL: 'https://adivina-musculos-ignacio-default-rtdb.firebaseio.com',
+  projectId: 'adivina-musculos-ignacio',
+  storageBucket: 'adivina-musculos-ignacio.firebasestorage.app',
+  messagingSenderId: '380592745572',
+  appId: '1:380592745572:web:4952fd7613699b29dc0371',
 };
 
 export const estaConfigurado = (): boolean => !firebaseConfig.apiKey.includes('PEGAR-ACÁ');
